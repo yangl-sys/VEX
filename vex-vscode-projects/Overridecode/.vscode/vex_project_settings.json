@@ -1,0 +1,18 @@
+{
+	"project": {
+		"name": "Overridecode",
+		"slot": 1,
+		"description": "",
+		"platform": "V5",
+		"creationDate": "Wed, 22 Jul 2026 01:33:35 GMT",
+		"language": "python",
+		"python": {
+			"main": "\\src\\main.py"
+		},
+		"sdkVersion": "V5_1_0_1_25"
+	},
+	"extension": {
+		"version": "0.8.2026020401",
+		"json": 1
+	}
+}
