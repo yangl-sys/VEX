@@ -1,6 +1,5 @@
 #region VEXcode Generated Robot Configuration
 from vex import *
-import urandom
 import math
 
 # Brain should be defined by default
@@ -18,16 +17,6 @@ Rightdtrain = MotorGroup(Rightdtrain_motor_a, Rightdtrain_motor_b)
 
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
-
-
-# Make random actually random
-def initializeRandomSeed():
-    wait(100, MSEC)
-    random = brain.battery.voltage(MV) + brain.battery.current(CurrentUnits.AMP) * 100 + brain.timer.system_high_res()
-    urandom.seed(int(random))
-      
-# Set random seed 
-initializeRandomSeed()
 
 
 def play_vexcode_sound(sound_name):
@@ -55,17 +44,24 @@ def autonomous():
 
 def driver_control():
     record = False
+    inputs = []
     while True:
         LR = (controller_1.axis4.position() ** 3)/10000
         UD = (controller_1.axis3.position() ** 3)/10000
         Leftdtrain.spin(FORWARD,UD+LR,VOLT)
         Rightdtrain.spin(FORWARD,UD-LR,VOLT)
-        if controller_1.buttonDown.pressed() and controller_1.buttonRight.pressed():
-            controller_1.rumble("---")
-            record = True
+        if controller_1.buttonDown.pressing() and controller_1.buttonRight.pressing():
+            if record:
+                with open("output.txt", "w") as file:
+                    for input in inputs:
+                        file.write(f"{input[0]},{input[1]}\n")
+                record = False
+            else:
+                controller_1.rumble("---")
+                record = True
+        if record:
+            inputs.append([LR, UD])
 
-        
-with open("output.txt", "w") as file:
     
 
 competition = Competition(driver_control,autonomous)
