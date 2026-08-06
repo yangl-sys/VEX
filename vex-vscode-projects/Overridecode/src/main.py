@@ -49,13 +49,23 @@ def when_started1():
 when_started1()
 
 def autonomous():
-    pass
+    def replay():
+        pass
+    replay()
 
 def driver_control():
+    record = False
     while True:
         LR = (controller_1.axis4.position() ** 3)/10000
         UD = (controller_1.axis3.position() ** 3)/10000
         Leftdtrain.spin(FORWARD,UD+LR,VOLT)
         Rightdtrain.spin(FORWARD,UD-LR,VOLT)
+        if controller_1.buttonDown.pressed() and controller_1.buttonRight.pressed():
+            controller_1.rumble("---")
+            record = True
+
+        
+with open("output.txt", "w") as file:
+    
 
 competition = Competition(driver_control,autonomous)
