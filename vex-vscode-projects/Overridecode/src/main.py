@@ -37,29 +37,17 @@ def when_started1():
 when_started1()
 
 def autonomous():
-    def replay():
-        pass
-    replay()
+    def forward(dist):
+        deg = dist
+        Leftdtrain.spin_for(FORWARD,deg,DEGREES)
+    pass
 
 def driver_control():
-    record = False
-    inputs = []
     while True:
         LR = (controller_1.axis4.position() ** 3)/10000
         UD = (controller_1.axis3.position() ** 3)/10000
         Leftdtrain.spin(FORWARD,UD+LR)
         Rightdtrain.spin(FORWARD,UD-LR)
-        if controller_1.buttonDown.pressing() and controller_1.buttonRight.pressing():
-            if record:
-                with open("output.txt", "w") as file:
-                    for input in inputs:
-                        file.write(f"{input[0]},{input[1]}\n")
-                record = False
-            else:
-                controller_1.rumble("---")
-                record = True
-        if record:
-            inputs.append([LR, UD])
 
     
 
