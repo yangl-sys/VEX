@@ -1,6 +1,5 @@
 #region VEXcode Generated Robot Configuration
 from vex import *
-import math
 
 # Brain should be defined by default
 brain=Brain()
@@ -48,8 +47,8 @@ def driver_control():
     while True:
         LR = (controller_1.axis4.position() ** 3)/10000
         UD = (controller_1.axis3.position() ** 3)/10000
-        Leftdtrain.spin(FORWARD,UD+LR,VOLT)
-        Rightdtrain.spin(FORWARD,UD-LR,VOLT)
+        Leftdtrain.spin(FORWARD,UD+LR)
+        Rightdtrain.spin(FORWARD,UD-LR)
         if controller_1.buttonDown.pressing() and controller_1.buttonRight.pressing():
             if record:
                 with open("output.txt", "w") as file:
