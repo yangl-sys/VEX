@@ -6,11 +6,11 @@ brain=Brain()
 
 # Robot configuration code
 controller_1 = Controller(PRIMARY)
-Leftdtrain_motor_a = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
-Leftdtrain_motor_b = Motor(Ports.PORT9, GearSetting.RATIO_18_1, True)
+Leftdtrain_motor_a = Motor(Ports.PORT1, GearSetting.RATIO_36_1, False)
+Leftdtrain_motor_b = Motor(Ports.PORT9, GearSetting.RATIO_36_1, True)
 Leftdtrain = MotorGroup(Leftdtrain_motor_a, Leftdtrain_motor_b)
-Rightdtrain_motor_a = Motor(Ports.PORT11, GearSetting.RATIO_18_1, True)
-Rightdtrain_motor_b = Motor(Ports.PORT19, GearSetting.RATIO_18_1, False)
+Rightdtrain_motor_a = Motor(Ports.PORT11, GearSetting.RATIO_36_1, True)
+Rightdtrain_motor_b = Motor(Ports.PORT19, GearSetting.RATIO_36_1, False)
 Rightdtrain = MotorGroup(Rightdtrain_motor_a, Rightdtrain_motor_b)
 
 
@@ -37,9 +37,15 @@ def when_started1():
 when_started1()
 
 def autonomous():
-    def forward(dist):
-        deg = dist
+    def forwardback(distmm):
+        deg = (320/distmm) * 360
         Leftdtrain.spin_for(FORWARD,deg,DEGREES)
+        Rightdtrain.spin_for(FORWARD,deg,DEGREES)
+    def turn(degree):
+            deg = (320/degree) * 360
+            Leftdtrain.spin_for(FORWARD,deg,DEGREES)
+            Rightdtrain.spin_for(REVERSE,deg,DEGREES)
+
     pass
 
 def driver_control():
