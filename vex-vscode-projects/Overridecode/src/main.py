@@ -7,9 +7,9 @@ brain=Brain()
 # Robot configuration code
 controller_1 = Controller(PRIMARY)
 Leftdtrain_motor_a = Motor(Ports.PORT1, GearSetting.RATIO_36_1, False)
-Leftdtrain_motor_b = Motor(Ports.PORT9, GearSetting.RATIO_36_1, True)
+Leftdtrain_motor_b = Motor(Ports.PORT9, GearSetting.RATIO_36_1, False)
 Leftdtrain = MotorGroup(Leftdtrain_motor_a, Leftdtrain_motor_b)
-Rightdtrain_motor_a = Motor(Ports.PORT11, GearSetting.RATIO_36_1, True)
+Rightdtrain_motor_a = Motor(Ports.PORT11, GearSetting.RATIO_36_1, False)
 Rightdtrain_motor_b = Motor(Ports.PORT19, GearSetting.RATIO_36_1, False)
 Rightdtrain = MotorGroup(Rightdtrain_motor_a, Rightdtrain_motor_b)
 
@@ -50,8 +50,8 @@ def autonomous():
 
 def driver_control():
     while True:
-        LR = (controller_1.axis4.position() ** 3)/10000
-        UD = (controller_1.axis3.position() ** 3)/10000
+        LR = (controller_1.axis3.position() ** 3)/10000
+        UD = (controller_1.axis4.position() ** 3)/10000
         Leftdtrain.spin(FORWARD,UD+LR)
         Rightdtrain.spin(FORWARD,UD-LR)
 
