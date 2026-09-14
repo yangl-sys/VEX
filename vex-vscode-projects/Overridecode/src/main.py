@@ -12,7 +12,6 @@ Leftdtrain = MotorGroup(Leftdtrain_motor_a, Leftdtrain_motor_b)
 Rightdtrain_motor_a = Motor(Ports.PORT11, GearSetting.RATIO_36_1, False)
 Rightdtrain_motor_b = Motor(Ports.PORT19, GearSetting.RATIO_36_1, False)
 Rightdtrain = MotorGroup(Rightdtrain_motor_a, Rightdtrain_motor_b)
-claw_motor = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
 
 
 # wait for rotation sensor to fully initialize
@@ -38,31 +37,16 @@ def when_started1():
 when_started1()
 
 def autonomous():
-    wheel_circumference_mm = 320
-    one_foot_mm = 304.8
+    def forwardback(distmm):
+        deg = (320/distmm) * 360
+        Leftdtrain.spin_for(FORWARD,deg,DEGREES)
+        Rightdtrain.spin_for(FORWARD,deg,DEGREES)
+    def turn(degree):
+            deg = (320/degree) * 360
+            Leftdtrain.spin_for(FORWARD,deg,DEGREES)
+            Rightdtrain.spin_for(REVERSE,deg,DEGREES)
 
-    def drive(distance_mm, direction):
-        degrees = (distance_mm / wheel_circumference_mm) * 360
-        Leftdtrain.spin_for(direction, degrees, DEGREES, wait=False)
-        Rightdtrain.spin_for(direction, degrees, DEGREES)
-
-    def turn_left():
-        turn_degrees = 360
-        Leftdtrain.spin_for(REVERSE, turn_degrees, DEGREES, wait=False)
-        Rightdtrain.spin_for(FORWARD, turn_degrees, DEGREES)
-
-    # Tunnel: forward, back, forward, back, then forward.
-    drive(one_foot_mm, FORWARD)
-    drive(one_foot_mm, REVERSE)
-    drive(one_foot_mm, FORWARD)
-    drive(one_foot_mm, REVERSE)
-    drive(one_foot_mm, FORWARD)
-
-    # Turn left, travel 12 feet, then move 1 foot in and back out.
-    turn_left()
-    drive(12 * one_foot_mm, FORWARD)
-    drive(one_foot_mm, FORWARD)
-    drive(one_foot_mm, REVERSE)
+    pass
 
 def driver_control():
     while True:
@@ -71,13 +55,6 @@ def driver_control():
         Leftdtrain.spin(FORWARD,UD+LR)
         Rightdtrain.spin(FORWARD,UD-LR)
 
-        if controller_1.buttonR1.pressing():
-            claw_motor.spin(FORWARD, 100, PERCENT)
-        elif controller_1.buttonR2.pressing():
-            claw_motor.spin(REVERSE, 100, PERCENT)
-        else:
-            claw_motor.stop(HOLD)
-
-        wait(20, MSEC)
+    
 
 competition = Competition(driver_control,autonomous)
