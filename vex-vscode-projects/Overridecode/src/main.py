@@ -3,16 +3,17 @@ from vex import *
 
 # Brain should be defined by default
 brain=Brain()
-
+green = GearSetting.RATIO_18_1
+red = GearSetting.RATIO_36_1
 # Robot configuration code
 controller_1 = Controller(PRIMARY)
-Leftdtrain_motor_a = Motor(Ports.PORT1, GearSetting.RATIO_36_1, False)
-Leftdtrain_motor_b = Motor(Ports.PORT9, GearSetting.RATIO_36_1, False)
+Leftdtrain_motor_a = Motor(Ports.PORT1, green, False)
+Leftdtrain_motor_b = Motor(Ports.PORT9, green, False)
 Leftdtrain = MotorGroup(Leftdtrain_motor_a, Leftdtrain_motor_b)
-Rightdtrain_motor_a = Motor(Ports.PORT11, GearSetting.RATIO_36_1, False)
-Rightdtrain_motor_b = Motor(Ports.PORT19, GearSetting.RATIO_36_1, False)
+Rightdtrain_motor_a = Motor(Ports.PORT11, green, False)
+Rightdtrain_motor_b = Motor(Ports.PORT19, green, False)
 Rightdtrain = MotorGroup(Rightdtrain_motor_a, Rightdtrain_motor_b)
-claw_motor = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
+claw_motor = Motor(Ports.PORT3, green, False)
 
 
 # wait for rotation sensor to fully initialize
@@ -46,23 +47,13 @@ def autonomous():
         Leftdtrain.spin_for(direction, degrees, DEGREES, wait=False)
         Rightdtrain.spin_for(direction, degrees, DEGREES)
 
-    def turn_left():
-        turn_degrees = 360
-        Leftdtrain.spin_for(REVERSE, turn_degrees, DEGREES, wait=False)
-        Rightdtrain.spin_for(FORWARD, turn_degrees, DEGREES)
+    def drop():
+        claw_motor.spin(REVERSE, 100, DEGREES)
 
     # Tunnel: forward, back, forward, back, then forward.
-    drive(one_foot_mm, FORWARD)
-    drive(one_foot_mm, REVERSE)
-    drive(one_foot_mm, FORWARD)
-    drive(one_foot_mm, REVERSE)
-    drive(one_foot_mm, FORWARD)
-
-    # Turn left, travel 12 feet, then move 1 foot in and back out.
-    turn_left()
-    drive(12 * one_foot_mm, FORWARD)
-    drive(one_foot_mm, FORWARD)
-    drive(one_foot_mm, REVERSE)
+    claw_motor.stop(HOLD)
+    drive(1790, FORWARD)
+    drop()
 
 def driver_control():
     while True:
