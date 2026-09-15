@@ -15,10 +15,8 @@ Rightdtrain_motor_b = Motor(Ports.PORT19, green, False)
 Rightdtrain = MotorGroup(Rightdtrain_motor_a, Rightdtrain_motor_b)
 claw_motor = Motor(Ports.PORT3, green, False)
 
-
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
-
 
 def play_vexcode_sound(sound_name):
     # Helper to make playing sounds from the V5 in VEXcode easier and
@@ -32,7 +30,6 @@ wait(200, MSEC)
 print("\033[2J")
 
 #endregion VEXcode Generated Robot Configuration
-
 def when_started1():
     pass
 
@@ -44,7 +41,7 @@ def autonomous():
 
     def drive(distance_mm, direction):
         degrees = (distance_mm / wheel_circumference_mm) * 360
-        Leftdtrain.spin_for(direction, degrees, DEGREES, wait=False)
+        Leftdtrain.spin_for(direction, -1*degrees, DEGREES, wait=False)
         Rightdtrain.spin_for(direction, degrees, DEGREES)
 
     def drop():
@@ -59,8 +56,8 @@ def driver_control():
     while True:
         LR = (controller_1.axis3.position() ** 3)/10000
         UD = (controller_1.axis4.position() ** 3)/10000
-        Leftdtrain.spin(FORWARD,UD+LR)
-        Rightdtrain.spin(FORWARD,UD-LR)
+        Leftdtrain.spin(FORWARD,UD-LR)
+        Rightdtrain.spin(FORWARD,UD+LR)
 
         if controller_1.buttonR1.pressing():
             claw_motor.spin(FORWARD, 100, PERCENT)
