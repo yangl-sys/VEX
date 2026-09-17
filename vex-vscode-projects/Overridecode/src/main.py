@@ -14,6 +14,11 @@ Rightdtrain_motor_a = Motor(Ports.PORT11, green, False)
 Rightdtrain_motor_b = Motor(Ports.PORT19, green, False)
 Rightdtrain = MotorGroup(Rightdtrain_motor_a, Rightdtrain_motor_b)
 claw_motor = Motor(Ports.PORT3, green, False)
+arm_motor = Motor(Ports.PORT4, green, False)
+claw_motor.set_stopping(HOLD)
+arm_motor.set_stopping(HOLD)
+Leftdtrain.set_stopping(HOLD)
+Rightdtrain.set_stopping(HOLD)
 
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
@@ -45,7 +50,7 @@ def autonomous():
         Rightdtrain.spin_for(direction, degrees, DEGREES)
 
     def drop():
-        claw_motor.spin(REVERSE, 100, DEGREES)
+        claw_motor.spin_for(REVERSE, 80, DEGREES)
 
     # Tunnel: forward, back, forward, back, then forward.
     claw_motor.stop(HOLD)
@@ -54,17 +59,24 @@ def autonomous():
 
 def driver_control():
     while True:
+        claw = False
         LR = (controller_1.axis3.position() ** 3)/10000
         UD = (controller_1.axis4.position() ** 3)/10000
         Leftdtrain.spin(FORWARD,UD-LR)
         Rightdtrain.spin(FORWARD,UD+LR)
 
         if controller_1.buttonR1.pressing():
-            claw_motor.spin(FORWARD, 100, PERCENT)
-        elif controller_1.buttonR2.pressing():
-            claw_motor.spin(REVERSE, 100, PERCENT)
-        else:
-            claw_motor.stop(HOLD)
+            claw = not claw
+            if claw == True:
+                claw_motor.spin_for(FORWARD, 80, DEGREES)
+            else:
+                claw_motor.spin_for(REVERSE, 80, DEGREES)
+
+        if controller_1.buttonL1.pressing():
+            arm_motor.spin(FORWARD,100,PERCENT)
+
+        if controller_1.buttonL2.pressing():
+            arm_motor.spin(REVERSE,100,PERCENT)
 
         wait(20, MSEC)
 
