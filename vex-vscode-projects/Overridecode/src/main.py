@@ -15,6 +15,8 @@ Rightdtrain_motor_b = Motor(Ports.PORT19, green, False)
 Rightdtrain = MotorGroup(Rightdtrain_motor_a, Rightdtrain_motor_b)
 claw_motor = Motor(Ports.PORT3, green, False)
 arm_motor = Motor(Ports.PORT4, green, False)
+toggle_motor = Motor(Ports.PORT5, green, False)
+
 claw_motor.set_stopping(HOLD)
 arm_motor.set_stopping(HOLD)
 Leftdtrain.set_stopping(HOLD)
@@ -42,41 +44,36 @@ when_started1()
 
 def autonomous():
     wheel_circumference_mm = 320
-    one_foot_mm = 304.8
-
     def drive(distance_mm, direction):
         degrees = (distance_mm / wheel_circumference_mm) * 360
         Leftdtrain.spin_for(direction, -1*degrees, DEGREES, wait=False)
         Rightdtrain.spin_for(direction, degrees, DEGREES)
 
     def drop():
-        claw_motor.spin_for(REVERSE, 80, DEGREES)
+        claw_motor.spin_for(REVERSE, 20, DEGREES)
 
-    # Tunnel: forward, back, forward, back, then forward.
     claw_motor.stop(HOLD)
-    drive(1790, FORWARD)
+    drive(1700, FORWARD)
     drop()
 
 def driver_control():
     while True:
-        claw = False
         LR = (controller_1.axis3.position() ** 3)/10000
         UD = (controller_1.axis4.position() ** 3)/10000
         Leftdtrain.spin(FORWARD,UD-LR)
         Rightdtrain.spin(FORWARD,UD+LR)
-
+    
         if controller_1.buttonR1.pressing():
-            claw = not claw
-            if claw == True:
-                claw_motor.spin_for(FORWARD, 80, DEGREES)
-            else:
-                claw_motor.spin_for(REVERSE, 80, DEGREES)
+            claw_motor.spin(FORWARD,50,PERCENT)
+        elif controller_1.buttonR2.pressing():
+            claw_motor.spin(REVERSE,50,PERCENT)
+        else:
+            claw_motor.stop(HOLD)
 
-        if controller_1.buttonL1.pressing():
-            arm_motor.spin(FORWARD,100,PERCENT)
-
-        if controller_1.buttonL2.pressing():
-            arm_motor.spin(REVERSE,100,PERCENT)
+        if controller_1.buttonB.pressing():
+            toggle_motor.spin(REVERSE,100,PERCENT)
+        else:
+            toggle_motor.stop(HOLD)
 
         wait(20, MSEC)
 
