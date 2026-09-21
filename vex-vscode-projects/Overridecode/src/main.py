@@ -14,11 +14,9 @@ Rightdtrain_motor_a = Motor(Ports.PORT11, green, False)
 Rightdtrain_motor_b = Motor(Ports.PORT19, green, False)
 Rightdtrain = MotorGroup(Rightdtrain_motor_a, Rightdtrain_motor_b)
 claw_motor = Motor(Ports.PORT3, green, False)
-arm_motor = Motor(Ports.PORT4, green, False)
 toggle_motor = Motor(Ports.PORT5, green, False)
 
 claw_motor.set_stopping(HOLD)
-arm_motor.set_stopping(HOLD)
 Leftdtrain.set_stopping(HOLD)
 Rightdtrain.set_stopping(HOLD)
 
