@@ -15,6 +15,9 @@ Rightdtrain_motor_b = Motor(Ports.PORT19, green, False)
 Rightdtrain = MotorGroup(Rightdtrain_motor_a, Rightdtrain_motor_b)
 claw_motor = Motor(Ports.PORT3, green, False)
 toggle_motor = Motor(Ports.PORT5, green, False)
+arm_motor_a = Motor(Ports.PORT7,red,False)
+arm_motor_b = Motor(Ports.PORT17,red,True)
+Rightdtrain = MotorGroup(arm_motor_a, arm_motor_b)
 
 claw_motor.set_stopping(HOLD)
 Leftdtrain.set_stopping(HOLD)
@@ -41,12 +44,12 @@ def when_started1():
 when_started1()
 
 def autonomous():
-    wheel_circumference_mm = 320
+    wheel_circumference_mm = 320 * 0.75
     def drive(distance_mm, direction):
         degrees = (distance_mm / wheel_circumference_mm) * 360
         Leftdtrain.spin_for(direction, -1*degrees, DEGREES, wait=False)
         Rightdtrain.spin_for(direction, degrees, DEGREES)
-
+    
     def drop():
         claw_motor.spin_for(REVERSE, 20, DEGREES)
 
@@ -56,18 +59,21 @@ def autonomous():
 
 def driver_control():
     while True:
+        close = True
         LR = (controller_1.axis3.position() ** 3)/10000
         UD = (controller_1.axis4.position() ** 3)/10000
         Leftdtrain.spin(FORWARD,UD-LR)
         Rightdtrain.spin(FORWARD,UD+LR)
-    
-        if controller_1.buttonR1.pressing():
-            claw_motor.spin(FORWARD,50,PERCENT)
-        elif controller_1.buttonR2.pressing():
-            claw_motor.spin(REVERSE,50,PERCENT)
-        else:
-            claw_motor.stop(HOLD)
-
+        def claw_toggle():
+            nonlocal close
+            if close == True:
+                claw_motor.spin_for(FORWARD,50,DEGREES,100,PERCENT,False)
+                close = False
+            else:
+                claw_motor.spin_for(REVERSE,50,DEGREES,100,PERCENT,False)
+                close = True
+        controller_1.buttonR1.released(claw_toggle,(close,))
+            
         if controller_1.buttonB.pressing():
             toggle_motor.spin(REVERSE,100,PERCENT)
         else:
