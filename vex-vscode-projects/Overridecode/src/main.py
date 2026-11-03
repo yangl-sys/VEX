@@ -14,10 +14,9 @@ Rightdtrain_motor_a = Motor(Ports.PORT11, green, False)
 Rightdtrain_motor_b = Motor(Ports.PORT19, green, False)
 Rightdtrain = MotorGroup(Rightdtrain_motor_a, Rightdtrain_motor_b)
 claw_motor = Motor(Ports.PORT3, green, False)
-toggle_motor = Motor(Ports.PORT5, green, False)
 arm_motor_a = Motor(Ports.PORT7,red,False)
-arm_motor_b = Motor(Ports.PORT17,red,True)
-Rightdtrain = MotorGroup(arm_motor_a, arm_motor_b)
+arm_motor_b = Motor(Ports.PORT17,red,False)
+arm = MotorGroup(arm_motor_a, arm_motor_b)
 
 claw_motor.set_stopping(HOLD)
 Leftdtrain.set_stopping(HOLD)
@@ -72,13 +71,8 @@ def driver_control():
             else:
                 claw_motor.spin_for(REVERSE,50,DEGREES,100,PERCENT,False)
                 close = True
-        controller_1.buttonR1.released(claw_toggle,(close,))
-            
-        if controller_1.buttonB.pressing():
-            toggle_motor.spin(REVERSE,100,PERCENT)
-        else:
-            toggle_motor.stop(HOLD)
-
+        controller_1.buttonR1.released(claw_toggle)
+        #if controller_1.button
         wait(20, MSEC)
 
 competition = Competition(driver_control,autonomous)
