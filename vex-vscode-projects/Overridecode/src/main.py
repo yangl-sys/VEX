@@ -8,9 +8,9 @@ red = GearSetting.RATIO_36_1
 # Robot configuration code
 controller_1 = Controller(PRIMARY)
 Leftdtrain_motor_a = Motor(Ports.PORT1, green, False)
-Leftdtrain_motor_b = Motor(Ports.PORT9, green, False)
+Leftdtrain_motor_b = Motor(Ports.PORT11, green, False)
 Leftdtrain = MotorGroup(Leftdtrain_motor_a, Leftdtrain_motor_b)
-Rightdtrain_motor_a = Motor(Ports.PORT11, green, False)
+Rightdtrain_motor_a = Motor(Ports.PORT9, green, False)
 Rightdtrain_motor_b = Motor(Ports.PORT19, green, False)
 Rightdtrain = MotorGroup(Rightdtrain_motor_a, Rightdtrain_motor_b)
 claw_motor = Motor(Ports.PORT3, green, False)
