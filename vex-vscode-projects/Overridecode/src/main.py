@@ -21,6 +21,7 @@ arm = MotorGroup(arm_motor_a, arm_motor_b)
 claw_motor.set_stopping(HOLD)
 Leftdtrain.set_stopping(HOLD)
 Rightdtrain.set_stopping(HOLD)
+arm.set_stopping(HOLD)
 
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
@@ -52,9 +53,14 @@ def autonomous():
     def drop():
         claw_motor.spin_for(REVERSE, 20, DEGREES)
 
+    def spinarm(degree,direction):
+        arm.spin_for(direction,degree*7) 
     claw_motor.stop(HOLD)
+    spinarm(45,FORWARD)
     drive(1700, FORWARD)
+    spinarm(35,REVERSE)
     drop()
+    spinarm(10,FORWARD)
 
 def driver_control():
     while True:
@@ -66,13 +72,12 @@ def driver_control():
         def claw_toggle():
             nonlocal close
             if close == True:
-                claw_motor.spin_for(FORWARD,50,DEGREES,100,PERCENT,False)
+                claw_motor.spin_for(FORWARD,20,DEGREES,100,PERCENT,False)
                 close = False
             else:
-                claw_motor.spin_for(REVERSE,50,DEGREES,100,PERCENT,False)
+                claw_motor.spin_for(REVERSE,20,DEGREES,100,PERCENT,False)
                 close = True
         controller_1.buttonR1.released(claw_toggle)
-        #if controller_1.button
-        wait(20, MSEC)
+        arm.spin(FORWARD,controller_1.axis2.position())
 
 competition = Competition(driver_control,autonomous)
