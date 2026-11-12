@@ -3,19 +3,20 @@ from vex import *
 
 # Brain should be defined by default
 brain=Brain()
+blue = GearSetting.RATIO_6_1
 green = GearSetting.RATIO_18_1
 red = GearSetting.RATIO_36_1
 # Robot configuration code
 controller_1 = Controller(PRIMARY)
-Leftdtrain_motor_a = Motor(Ports.PORT1, green, False)
-Leftdtrain_motor_b = Motor(Ports.PORT11, green, False)
+Leftdtrain_motor_a = Motor(Ports.PORT1, blue, True)
+Leftdtrain_motor_b = Motor(Ports.PORT11, blue, True)
 Leftdtrain = MotorGroup(Leftdtrain_motor_a, Leftdtrain_motor_b)
-Rightdtrain_motor_a = Motor(Ports.PORT9, green, False)
-Rightdtrain_motor_b = Motor(Ports.PORT19, green, False)
+Rightdtrain_motor_a = Motor(Ports.PORT9, blue, True)
+Rightdtrain_motor_b = Motor(Ports.PORT19, blue, True)
 Rightdtrain = MotorGroup(Rightdtrain_motor_a, Rightdtrain_motor_b)
 claw_motor = Motor(Ports.PORT3, green, False)
-arm_motor_a = Motor(Ports.PORT7,red,False)
-arm_motor_b = Motor(Ports.PORT17,red,False)
+arm_motor_a = Motor(Ports.PORT8,red,True)
+arm_motor_b = Motor(Ports.PORT18,red,True)
 arm = MotorGroup(arm_motor_a, arm_motor_b)
 
 claw_motor.set_stopping(HOLD)
@@ -63,21 +64,22 @@ def autonomous():
     spinarm(10,FORWARD)
 
 def driver_control():
+    close = True
+    def claw_toggle():
+        nonlocal close
+        print("y")
+        if close == True:
+            claw_motor.spin_for(FORWARD,20,DEGREES,100,PERCENT,False)
+            close = False
+        else:
+            claw_motor.spin_for(REVERSE,20,DEGREES,100,PERCENT,False)
+            close = True
+    controller_1.buttonR1.released(claw_toggle)
     while True:
-        close = True
         LR = (controller_1.axis3.position() ** 3)/10000
         UD = (controller_1.axis4.position() ** 3)/10000
-        Leftdtrain.spin(FORWARD,UD-LR)
-        Rightdtrain.spin(FORWARD,UD+LR)
-        def claw_toggle():
-            nonlocal close
-            if close == True:
-                claw_motor.spin_for(FORWARD,20,DEGREES,100,PERCENT,False)
-                close = False
-            else:
-                claw_motor.spin_for(REVERSE,20,DEGREES,100,PERCENT,False)
-                close = True
-        controller_1.buttonR1.released(claw_toggle)
+        Leftdtrain.spin(FORWARD,UD+LR)
+        Rightdtrain.spin(FORWARD,UD-LR)
         arm.spin(FORWARD,controller_1.axis2.position())
 
 competition = Competition(driver_control,autonomous)
