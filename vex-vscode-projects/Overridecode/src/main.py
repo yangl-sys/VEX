@@ -75,8 +75,8 @@ def driver_control():
             close = True
     controller_1.buttonR1.released(claw_toggle)
     while True:
-        LR = (controller_1.axis3.position() ** 3)/ 2048383
-        UD = (controller_1.axis4.position() ** 3)/ 2048383
+        LR = (controller_1.axis3.position() ** 3)/ 20483.83
+        UD = (controller_1.axis4.position() ** 3)/ 20483.83
         Leftdtrain.spin(FORWARD,UD+LR,PERCENT)
         Rightdtrain.spin(FORWARD,UD-LR,PERCENT)
         arm.spin(FORWARD,controller_1.axis2.position())
