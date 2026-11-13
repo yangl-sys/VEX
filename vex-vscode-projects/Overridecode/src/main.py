@@ -47,7 +47,7 @@ when_started1()
 def autonomous():
     wheel_circumference_mm = 320 * 0.75
     def drive(distance_mm, direction):
-        degrees = (distance_mm / wheel_circumference_mm) * 360
+        degrees = (distance_mm / wheel_circumference_mm) * -360
         Leftdtrain.spin_for(direction, -1*degrees, DEGREES, wait=False)
         Rightdtrain.spin_for(direction, degrees, DEGREES)
     
@@ -67,19 +67,18 @@ def driver_control():
     close = True
     def claw_toggle():
         nonlocal close
-        print("y")
         if close == True:
-            claw_motor.spin_for(FORWARD,20,DEGREES,100,PERCENT,False)
+            claw_motor.spin_for(FORWARD,40,DEGREES,100,PERCENT,False)
             close = False
         else:
-            claw_motor.spin_for(REVERSE,20,DEGREES,100,PERCENT,False)
+            claw_motor.spin_for(REVERSE,40,DEGREES,100,PERCENT,False)
             close = True
     controller_1.buttonR1.released(claw_toggle)
     while True:
-        LR = (controller_1.axis3.position() ** 3)/10000
-        UD = (controller_1.axis4.position() ** 3)/10000
-        Leftdtrain.spin(FORWARD,UD+LR)
-        Rightdtrain.spin(FORWARD,UD-LR)
+        LR = (controller_1.axis3.position() ** 3)/ 2048383
+        UD = (controller_1.axis4.position() ** 3)/ 2048383
+        Leftdtrain.spin(FORWARD,UD+LR,PERCENT)
+        Rightdtrain.spin(FORWARD,UD-LR,PERCENT)
         arm.spin(FORWARD,controller_1.axis2.position())
 
 competition = Competition(driver_control,autonomous)
